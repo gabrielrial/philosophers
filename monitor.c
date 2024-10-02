@@ -6,7 +6,7 @@
 /*   By: grial <grial@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 10:58:41 by grial             #+#    #+#             */
-/*   Updated: 2024/10/02 17:26:36 by grial            ###   ########.fr       */
+/*   Updated: 2024/10/02 17:49:41 by grial            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	*monitor(void *arg)
 	i = 0;
 	while (1)
 	{
+		usleep(500);
 		if (i == prog->n_philos)
 			i = 0;
 		if (is_dead(&prog->philos[i]))
@@ -28,7 +29,6 @@ void	*monitor(void *arg)
 		if (prog->max_meals > 0 && check_meals(prog))
 			break ;
 		i++;
-		usleep(500);
 	}
 	stop_simulation(prog);
 	return (NULL);
@@ -58,7 +58,9 @@ int	check_meals(t_prog *prog)
 	}
 	else
 		pthread_mutex_unlock(&prog->philos[x].lock);
-	if (x == prog->n_philos - 1)
+	if (prog->n_philos == 1 && x == 1)
+		return (1);
+	else if (x == prog->n_philos - 1 && prog->n_philos > 1)
 		return (1);
 	return (0);
 }
